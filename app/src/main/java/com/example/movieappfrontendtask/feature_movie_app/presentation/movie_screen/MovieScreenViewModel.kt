@@ -22,15 +22,6 @@ class MovieScreenViewModel @Inject constructor(
         getMovieResult(category = "now_playing")
     }
 
-    fun onEvent(event: MovieScreenEvent) {
-        when (event) {
-            is MovieScreenEvent.Refresh -> {
-                getMovieResult(category = "now_playing")
-            }
-
-            else -> {}
-        }
-    }
 
     private fun getMovieResult(category: String) {
 
