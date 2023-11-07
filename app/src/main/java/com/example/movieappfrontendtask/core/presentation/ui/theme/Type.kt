@@ -1,4 +1,4 @@
-package com.example.movieappfrontendtask.ui.theme
+package com.example.movieappfrontendtask.core.presentation.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Movie App Frontend Task</string>
+    <string name="language">Language</string>
+    <string name="rate">Rating</string>
+    <string name="duration">Duration</string>
+    <string name="release_date">Release Date</string>
+    <string name="description">Description</string>
 </resources>
