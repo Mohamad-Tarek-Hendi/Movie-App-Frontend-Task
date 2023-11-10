@@ -1,5 +1,6 @@
 package com.example.movieappfrontendtask.feature_movie_app.presentation.movie_screen.component
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,15 +31,18 @@ import com.example.movieappfrontendtask.feature_movie_app.domain.model.movie.Mov
 @Composable
 fun MovieItem(
     moviesResult: MovieResult,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onCardClick: (MovieResult) -> Unit
 ) {
     Card(
+        modifier = modifier.clickable {
+            onCardClick(moviesResult)
+        },
         shape = RoundedCornerShape(15.dp),
         elevation = CardDefaults.cardElevation(5.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFFFFFFF))
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFFFFFFF)),
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
-
             AsyncImage(
                 model = ImageRequest
                     .Builder(LocalContext.current)
@@ -54,7 +58,6 @@ fun MovieItem(
                 placeholder = painterResource(R.drawable.baseline_downloading_24),
                 error = painterResource(R.drawable.baseline_downloading_24)
             )
-
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(

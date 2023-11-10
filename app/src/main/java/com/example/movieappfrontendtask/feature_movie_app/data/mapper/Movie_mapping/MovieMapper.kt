@@ -21,6 +21,7 @@ fun MovieResultDto.toMovieResult(): MovieResult {
         isAdult = isAdult,
         categoriesList = categoriesList,
         movieId = movieId,
+        overview = overview,
         originalLanguage = originalLanguage,
         originalTitle = originalTitle,
         popularity = popularity,

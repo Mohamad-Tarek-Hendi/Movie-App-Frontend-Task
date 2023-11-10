@@ -25,6 +25,13 @@ interface MovieApi {
         movieId: Int
     ): MovieDetailDto
 
+    @GET("search/movie?page=1")
+    suspend fun searchForMovies(
+        @Query("query") searchText: String,
+        @Header("Authorization") authorization: String = "Bearer $Authorization",
+    ): MovieDto
+
+
     companion object {
         const val Authorization =
             "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3MGJhMDYzMDM3ZmJjZGU1MGFjMjZlNzFkNGE4Nzc2YiIsInN1YiI6IjYxNjZiMDA4ZDdmNDY1MDA0MjQ3ZWUwZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.F9qSlScGTilHv2fiTsi0Bk_5SbMspBsk0tXJPaWbPOA"

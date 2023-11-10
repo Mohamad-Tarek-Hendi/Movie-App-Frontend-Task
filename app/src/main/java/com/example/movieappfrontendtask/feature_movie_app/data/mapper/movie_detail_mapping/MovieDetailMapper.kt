@@ -1,4 +1,4 @@
-package com.example.movieappfrontendtask.feature_movie_app.data.mapper.movie_detail
+package com.example.movieappfrontendtask.feature_movie_app.data.mapper.movie_detail_mapping
 
 import com.example.movieapitask.feature_movie_app.data.remote.dto.movie_dto.CategoryDto
 import com.example.movieapitask.feature_movie_app.data.remote.dto.movie_dto.MovieDetailDto

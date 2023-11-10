@@ -5,7 +5,7 @@ import android.os.Build
 import androidx.annotation.RequiresExtension
 import com.example.movieappfrontendtask.core.constant.Resource
 import com.example.movieappfrontendtask.feature_movie_app.data.mapper.Movie_mapping.toMovie
-import com.example.movieappfrontendtask.feature_movie_app.data.mapper.movie_detail.toMovieDetail
+import com.example.movieappfrontendtask.feature_movie_app.data.mapper.movie_detail_mapping.toMovieDetail
 import com.example.movieappfrontendtask.feature_movie_app.data.remote.MovieApi
 import com.example.movieappfrontendtask.feature_movie_app.domain.model.movie.Movie
 import com.example.movieappfrontendtask.feature_movie_app.domain.model.movie_detail.MovieDetail
@@ -25,7 +25,7 @@ class MovieRepositoryImpl(
 
         emit(Resource.Loading(true))
 
-        val remoteMovies = try {
+        val remoteMoviesResult = try {
             movieApi.getMoviesByCategory(category = category)
         } catch (e: HttpException) {
             e.printStackTrace()
@@ -37,8 +37,8 @@ class MovieRepositoryImpl(
             null
         }
 
-        remoteMovies?.let { movie ->
-            emit(Resource.Success(data = movie.toMovie()))
+        remoteMoviesResult?.let { movieResult ->
+            emit(Resource.Success(data = movieResult.toMovie()))
         }
 
         emit(Resource.Loading(false))
@@ -49,7 +49,7 @@ class MovieRepositoryImpl(
 
         emit(Resource.Loading(true))
 
-        val remoteMovieDetail = try {
+        val remoteMovieDetailResult = try {
             movieApi.getMovieDetail(movieId = movieId)
         } catch (e: HttpException) {
             e.printStackTrace()
@@ -61,11 +61,34 @@ class MovieRepositoryImpl(
             null
         }
 
-        remoteMovieDetail?.let { movieDetail ->
-            emit(Resource.Success(data = movieDetail.toMovieDetail()))
+        remoteMovieDetailResult?.let { movieDetailResult ->
+            emit(Resource.Success(data = movieDetailResult.toMovieDetail()))
         }
 
         emit(Resource.Loading(false))
 
+    }
+
+    override fun searchForMovies(searchText: String): Flow<Resource<Movie>> = flow {
+
+        emit(Resource.Loading(true))
+
+        val remoteSearchingResult = try {
+            movieApi.searchForMovies(searchText = searchText)
+        } catch (e: HttpException) {
+            e.printStackTrace()
+            emit(Resource.Error("Couldn't Reach Server, Check Your Internet Connection."))
+            null
+        } catch (e: IOException) {
+            e.printStackTrace()
+            emit(Resource.Error("Couldn't Load Data"))
+            null
+        }
+
+        remoteSearchingResult?.let { searchResult ->
+            emit(Resource.Success(data = searchResult.toMovie()))
+        }
+
+        emit(Resource.Loading(false))
     }
 }

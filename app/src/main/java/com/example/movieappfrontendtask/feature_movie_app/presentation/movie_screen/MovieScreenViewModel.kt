@@ -8,6 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.movieappfrontendtask.core.constant.Resource
 import com.example.movieappfrontendtask.feature_movie_app.domain.repository.MovieRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -23,31 +25,134 @@ class MovieScreenViewModel @Inject constructor(
     }
 
 
+    private var searchJob: Job? = null
+
+    fun onEvent(event: MovieScreenEvent) {
+
+        when (event) {
+
+            is MovieScreenEvent.OnCategoryChange -> {
+                state = state.copy(category = event.category)
+                when (event.category) {
+                    "Now Playing" -> getMovieResult(category = "now_playing")
+                    "Popular" -> getMovieResult(category = "popular")
+                    "Top Rated" -> getMovieResult(category = "top_rated")
+                    "Upcoming" -> getMovieResult(category = "upcoming")
+                }
+            }
+
+            is MovieScreenEvent.OnMovieCardClick -> {
+                state = state.copy(movieResult = event.movie)
+            }
+
+            MovieScreenEvent.OnSearchIconClicked -> {
+                state = state.copy(
+                    isSearchBarVisible = true,
+                    movie = null
+                )
+            }
+
+            MovieScreenEvent.OnButtomSheetContentHide -> {
+                state = state.copy(
+                    movieResult = null
+                )
+            }
+
+            MovieScreenEvent.OnCloseSearchIconClick -> {
+                state = state.copy(
+                    isSearchBarVisible = false,
+                    searchQuery = ""
+                )
+                getMovieResult(category = state.category)
+            }
+
+            is MovieScreenEvent.OnSearchQueryChange -> {
+                state = state.copy(searchQuery = event.searchQuery)
+                searchJob?.cancel()
+                searchJob = viewModelScope.launch {
+                    delay(1000L)
+                    searchForNews(searchText = state.searchQuery)
+                }
+
+            }
+
+            else -> {}
+        }
+    }
+
     private fun getMovieResult(category: String) {
 
         viewModelScope.launch {
 
-            movieRepository.getMovie(category)
+            movieRepository.getMovie(category).collect { movieResults ->
 
-                .collect { results ->
+                when (movieResults) {
 
-                    when (results) {
-
-                        is Resource.Success -> {
-                            results.data?.let { result ->
-                                state = state.copy(movies = result)
-                            }
-                        }
-
-                        is Resource.Error ->
+                    is Resource.Success -> {
+                        movieResults.data?.let { result ->
                             state = state.copy(
-                                error = results.message ?: "An unexpected error occurred"
+                                movie = result,
+                                isLoading = false,
+                                error = null
                             )
+                        }
+                    }
 
-                        is Resource.Loading -> state = state.copy(isLoading = results.isLoading)
+                    is Resource.Error ->
+                        state = state.copy(
+                            movie = null,
+                            isLoading = false,
+                            error = movieResults.message ?: "An unexpected error occurred"
+                        )
+
+                    is Resource.Loading -> state = state.copy(
+                        isLoading = movieResults.isLoading,
+                        searchQuery = "",
+                        isSearchBarVisible = false
+                    )
+
+                }
+            }
+        }
+    }
+
+    private fun searchForNews(searchText: String) {
+
+        if (searchText.isEmpty()) {
+            return
+        }
+        viewModelScope.launch {
+
+            movieRepository.searchForMovies(searchText).collect { searchResult ->
+
+                when (searchResult) {
+
+                    is Resource.Success -> {
+                        state = state.copy(
+                            movie = searchResult.data,
+                            isLoading = false,
+                            error = null
+                        )
 
                     }
+
+                    is Resource.Error -> {
+                        state = state.copy(
+                            movie = null,
+                            error = searchResult.message ?: "An unexpected error occurred",
+                            isLoading = false
+                        )
+                    }
+
+                    is Resource.Loading -> {
+                        state = state.copy(
+                            isLoading = searchResult.isLoading
+                        )
+                    }
+
                 }
+            }
+
         }
     }
 

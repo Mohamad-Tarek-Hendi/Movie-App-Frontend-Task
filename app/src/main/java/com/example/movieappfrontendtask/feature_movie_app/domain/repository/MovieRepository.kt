@@ -14,4 +14,9 @@ interface MovieRepository {
     fun getMovieDetail(
         movieId: Int
     ): Flow<Resource<MovieDetail>>
+
+    fun searchForMovies(
+        searchText: String
+    ): Flow<Resource<Movie>>
+
 }
