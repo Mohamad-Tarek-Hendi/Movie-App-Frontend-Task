@@ -11,4 +11,5 @@ sealed class MovieScreenEvent {
     object OnCloseSearchIconClick : MovieScreenEvent()
     object OnSearchIconClicked : MovieScreenEvent()
     object OnButtomSheetContentHide : MovieScreenEvent()
+    data class ShowSimilarMovie(var movieId: Int) : MovieScreenEvent()
 }

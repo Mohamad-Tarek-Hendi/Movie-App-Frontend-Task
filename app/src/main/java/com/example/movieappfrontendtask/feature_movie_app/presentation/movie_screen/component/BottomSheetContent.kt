@@ -1,10 +1,13 @@
 package com.example.movieappfrontendtask.feature_movie_app.presentation.movie_screen.component
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -13,7 +16,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -24,27 +26,33 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.movieappfrontendtask.feature_movie_app.domain.model.movie.MovieResult
+import com.example.movieappfrontendtask.feature_movie_app.presentation.movie_screen.MovieScreenState
 
 @Composable
 fun BottomSheetContent(
+    isLoading: Boolean,
+    state: MovieScreenState,
     movieResult: MovieResult,
     onReadFullStoryButtonClicked: () -> Unit
 ) {
-    Surface(
+    Box(
         modifier = Modifier
-            .padding(start = 16.dp, end = 16.dp, bottom = 16.dp, top = 10.dp)
-            .fillMaxHeight(0.7f)
+            .fillMaxWidth()
+            .fillMaxHeight(0.6f)
 
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .verticalScroll(rememberScrollState())
+                .fillMaxSize()
         ) {
             Text(
                 text = movieResult.title,
                 style = MaterialTheme.typography.titleLarge,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth(),
+                color = Color(0xFF151B25)
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -59,12 +67,9 @@ fun BottomSheetContent(
                     }..."
                 } else movieResult.overview,
                 style = MaterialTheme.typography.bodyMedium,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
+                color = Color(0xFF034687)
             )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            ImageHolder(imageUrl = movieResult.posterPath)
 
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -83,15 +88,39 @@ fun BottomSheetContent(
                     fontWeight = FontWeight.Bold
                 )
             }
-            Spacer(modifier = Modifier.height(8.dp))
+
+            Spacer(modifier = Modifier.height(40.dp))
+
+            if (state.similarMovie !== null) {
+                RoundImage(state = state, isLoading = isLoading)
+            }
+
+
+        }
+
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize(),
+            contentAlignment = Alignment.BottomStart
+        ) {
 
             Button(
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(Color(0xFF4C5270)),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(IntrinsicSize.Min)
+                    .padding(bottom = 30.dp),
+                colors = ButtonDefaults.buttonColors(Color(0xFFE10032)),
                 onClick = onReadFullStoryButtonClicked,
             ) {
-                Text(text = "Read Full Detail")
+                Text(
+                    text = "Read Full Detail",
+                    color = Color.White
+                )
             }
+
         }
+
+
     }
 }

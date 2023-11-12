@@ -11,6 +11,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -21,10 +22,14 @@ fun MovieScreenTopBar(
 ) {
     TopAppBar(
         scrollBehavior = scrollBehavior,
-        title = { Text(text = "World News 360", fontWeight = FontWeight.Bold) },
+        title = { Text(text = "Movie 7/24 ", fontWeight = FontWeight.Bold) },
         actions = {
             IconButton(onClick = onSearchIconClicked) {
-                Icon(imageVector = Icons.Default.Search, contentDescription = "Search")
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = "Search",
+                    tint = Color(0xFFDBE8E1)
+                )
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(

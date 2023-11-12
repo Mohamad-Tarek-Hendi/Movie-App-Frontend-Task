@@ -2,6 +2,7 @@ package com.example.movieappfrontendtask.feature_movie_app.data.remote
 
 import com.example.movieapitask.feature_movie_app.data.remote.dto.movie_dto.MovieDetailDto
 import com.example.movieappfrontendtask.feature_movie_app.data.remote.dto.movie_dto.MovieDto
+import com.example.movieappfrontendtask.feature_movie_app.data.remote.dto.similar_movie.SimilarMovieDto
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Path
@@ -24,6 +25,14 @@ interface MovieApi {
         @Path("movie_id")
         movieId: Int
     ): MovieDetailDto
+
+
+    @GET("movie/{movie_id}/similar")
+    suspend fun getSimilarMovies(
+        @Header("Authorization") authorization: String = "Bearer $Authorization",
+        @Path("movie_id")
+        movieId: Int
+    ): SimilarMovieDto
 
     @GET("search/movie?page=1")
     suspend fun searchForMovies(

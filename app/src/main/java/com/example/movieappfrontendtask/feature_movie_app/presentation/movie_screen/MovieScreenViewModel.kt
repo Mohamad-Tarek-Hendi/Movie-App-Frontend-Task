@@ -45,23 +45,32 @@ class MovieScreenViewModel @Inject constructor(
                 state = state.copy(movieResult = event.movie)
             }
 
+            is MovieScreenEvent.ShowSimilarMovie -> {
+                state = state.copy(isLoadingShimmerBottom = true)
+                getSimilarMovieResult(movieId = event.movieId)
+            }
+
             MovieScreenEvent.OnSearchIconClicked -> {
                 state = state.copy(
                     isSearchBarVisible = true,
-                    movie = null
+                    movie = null,
+                    movieResult = null
                 )
             }
 
             MovieScreenEvent.OnButtomSheetContentHide -> {
                 state = state.copy(
-                    movieResult = null
+                    movieResult = null,
+                    similarMoviesResult = null,
+                    similarMovie = null
                 )
             }
 
             MovieScreenEvent.OnCloseSearchIconClick -> {
                 state = state.copy(
                     isSearchBarVisible = false,
-                    searchQuery = ""
+                    movie = null,
+                    movieResult = null
                 )
                 getMovieResult(category = state.category)
             }
@@ -70,7 +79,7 @@ class MovieScreenViewModel @Inject constructor(
                 state = state.copy(searchQuery = event.searchQuery)
                 searchJob?.cancel()
                 searchJob = viewModelScope.launch {
-                    delay(1000L)
+                    delay(2000L)
                     searchForNews(searchText = state.searchQuery)
                 }
 
@@ -93,7 +102,8 @@ class MovieScreenViewModel @Inject constructor(
                             state = state.copy(
                                 movie = result,
                                 isLoading = false,
-                                error = null
+                                error = null,
+                                isLoadingShimmer = false
                             )
                         }
                     }
@@ -102,17 +112,57 @@ class MovieScreenViewModel @Inject constructor(
                         state = state.copy(
                             movie = null,
                             isLoading = false,
+                            isLoadingShimmer = false,
                             error = movieResults.message ?: "An unexpected error occurred"
                         )
 
                     is Resource.Loading -> state = state.copy(
                         isLoading = movieResults.isLoading,
                         searchQuery = "",
-                        isSearchBarVisible = false
+                        isSearchBarVisible = false,
+                        isLoadingShimmer = movieResults.isLoading
                     )
 
                 }
             }
+        }
+    }
+
+    private fun getSimilarMovieResult(movieId: Int) {
+
+        viewModelScope.launch {
+
+            movieRepository.getSimilarMovies(movieId = movieId)
+
+                .collect { results ->
+
+                    when (results) {
+
+                        is Resource.Success -> {
+                            results.data?.let { result ->
+                                state = state.copy(
+                                    similarMovie = result,
+                                    isLoading = false,
+                                    error = null,
+                                    isLoadingShimmerBottom = false
+                                )
+                            }
+                        }
+
+                        is Resource.Error ->
+                            state = state.copy(
+                                error = results.message ?: "An unexpected error occurred",
+                                similarMovie = null,
+                                isLoading = false,
+                                isLoadingShimmerBottom = false,
+                            )
+
+                        is Resource.Loading -> state = state.copy(
+                            isLoading = results.isLoading,
+                        )
+
+                    }
+                }
         }
     }
 
@@ -121,8 +171,8 @@ class MovieScreenViewModel @Inject constructor(
         if (searchText.isEmpty()) {
             return
         }
-        viewModelScope.launch {
 
+        viewModelScope.launch {
             movieRepository.searchForMovies(searchText).collect { searchResult ->
 
                 when (searchResult) {
