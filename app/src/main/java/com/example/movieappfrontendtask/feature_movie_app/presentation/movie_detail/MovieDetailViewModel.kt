@@ -22,9 +22,8 @@ class MovieDetailViewModel @Inject constructor(
 
     init {
         val movieId = savedStateHandle.get<Int>("movieId") ?: 1
-        getMovieDetailResult(
-            movieId = movieId,
-        )
+        getMovieDetailResult(movieId = movieId)
+        getSimilarMovieResult(movieId = movieId)
     }
 
     private fun getMovieDetailResult(movieId: Int) {
@@ -48,7 +47,46 @@ class MovieDetailViewModel @Inject constructor(
                                 error = results.message ?: "An unexpected error occurred"
                             )
 
-                        is Resource.Loading -> state = state.copy(isLoading = results.isLoading)
+                        is Resource.Loading -> state = state.copy(
+                            isLoading = results.isLoading,
+                            isLoadingShimmer = results.isLoading
+                        )
+
+                    }
+                }
+        }
+    }
+
+    private fun getSimilarMovieResult(movieId: Int) {
+
+        viewModelScope.launch {
+
+            movieRepository.getSimilarMovies(movieId = movieId)
+
+                .collect { results ->
+
+                    when (results) {
+
+                        is Resource.Success -> {
+                            results.data?.let { result ->
+                                state = state.copy(
+                                    similarMovie = result,
+                                    isLoading = false,
+                                    error = null
+                                )
+                            }
+                        }
+
+                        is Resource.Error ->
+                            state = state.copy(
+                                error = results.message ?: "An unexpected error occurred",
+                                similarMovie = null,
+                                isLoading = false
+                            )
+
+                        is Resource.Loading -> state = state.copy(
+                            isLoading = results.isLoading,
+                        )
 
                     }
                 }

@@ -1,11 +1,13 @@
 package com.example.movieappfrontendtask.feature_movie_app.presentation.movie_detail.base
 
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,21 +21,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import com.example.movieappfrontendtask.R
+import com.example.movieappfrontendtask.feature_movie_app.presentation.common.component.SeeMoreText
+import com.example.movieappfrontendtask.feature_movie_app.presentation.common.mapping.toHourMinutes
 import com.example.movieappfrontendtask.feature_movie_app.presentation.movie_detail.MovieDetailViewModel
+import com.example.movieappfrontendtask.feature_movie_app.presentation.movie_detail.component.RoundImageDetail
 import com.example.movieappfrontendtask.feature_movie_app.presentation.movie_detail.component.SubtitlePrimary
 import com.example.movieappfrontendtask.feature_movie_app.presentation.movie_detail.component.SubtitleSecondary
+import com.example.movieappfrontendtask.feature_movie_app.presentation.movie_screen.component.ImageHolder
 import com.ramcosta.composedestinations.annotation.Destination
 
 @Composable
@@ -43,6 +43,8 @@ fun MovieDetailScreen(
     viewModel: MovieDetailViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
+
+    val scrollState = rememberScrollState()
 
     Box(modifier = Modifier.fillMaxSize()) {
 
@@ -55,91 +57,95 @@ fun MovieDetailScreen(
 
                 Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
 
-                    AsyncImage(
-                        model = ImageRequest
-                            .Builder(LocalContext.current)
-                            .data("https://image.tmdb.org/t/p/w500/${movieDetail.posterPath}")
-                            .crossfade(true)
-                            .build(),
-                        contentDescription = "Image",
-                        contentScale = ContentScale.Crop,
+                    ImageHolder(
+                        contentScale = ContentScale.FillBounds,
+                        isLoading = state.isLoading,
+                        imageUrl = movieDetail.posterPath,
                         modifier = Modifier
                             .clip(RoundedCornerShape(4.dp))
                             .fillMaxWidth()
-                            .aspectRatio(16 / 9f),
-                        placeholder = painterResource(R.drawable.baseline_downloading_24),
-                        error = painterResource(R.drawable.baseline_downloading_24)
+                            .height(360.dp)
                     )
+
 
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(start = 10.dp, end = 10.dp)
                     ) {
+
                         Text(
                             text = movieDetail.title,
-                            modifier = Modifier.padding(top = 10.dp),
-                            color = Color.Black,
-                            fontSize = 30.sp,
-                            fontWeight = FontWeight.W700,
                             maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
+                            overflow = TextOverflow.Ellipsis,
+                            style = MaterialTheme.typography.headlineLarge,
+                            modifier = Modifier
+                                .padding(all = 15.dp)
+                                .fillMaxWidth(),
+                            textAlign = TextAlign.Center
                         )
+
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(bottom = 10.dp, top = 10.dp)
+                                .horizontalScroll(scrollState)
                         ) {
 
                             Column(Modifier.weight(1f)) {
 
                                 SubtitlePrimary(
                                     text = movieDetail.originalLanguage,
+                                    textAlign = TextAlign.Center
                                 )
                                 SubtitleSecondary(
-                                    text = stringResource(R.string.language)
+                                    text = stringResource(R.string.language),
+                                    textAlign = TextAlign.Center
                                 )
 
                             }
                             Column(Modifier.weight(1f)) {
                                 SubtitlePrimary(
                                     text = movieDetail.voteAverage.toString(),
+                                    textAlign = TextAlign.Center
                                 )
                                 SubtitleSecondary(
-                                    text = stringResource(R.string.rate)
+                                    text = stringResource(R.string.rate),
+                                    textAlign = TextAlign.Center
                                 )
                             }
                             Column(Modifier.weight(1f)) {
                                 SubtitlePrimary(
-                                    text = "1h 28m"
+                                    text = movieDetail.duration.toHourMinutes(),
+                                    textAlign = TextAlign.Center
                                 )
                                 SubtitleSecondary(
-                                    text = stringResource(R.string.duration)
+                                    text = stringResource(R.string.duration),
+                                    textAlign = TextAlign.Center
                                 )
                             }
                             Column(Modifier.weight(1f)) {
                                 SubtitlePrimary(
-                                    text = movieDetail.releaseDate
+                                    text = movieDetail.releaseDate,
+                                    textAlign = TextAlign.Center
                                 )
                                 SubtitleSecondary(
-                                    text = stringResource(R.string.release_date)
+                                    text = stringResource(R.string.release_date),
+                                    textAlign = TextAlign.Center
                                 )
                             }
                         }
                         Text(
                             text = stringResource(R.string.description),
-                            color = Color.Black,
-                            fontSize = 17.sp,
-                            fontWeight = FontWeight.SemiBold
+                            style = MaterialTheme.typography.headlineMedium,
+                            modifier = Modifier
+                                .padding(all = 10.dp)
                         )
 
-                        Text(
-                            text = movieDetail.overview,
-                            color = Color.Black,
-                            fontSize = 17.sp,
-                            fontWeight = FontWeight.SemiBold
-                        )
+                        SeeMoreText(text = movieDetail.overview)
 
+                        RoundImageDetail(state = state)
+
+                        Spacer(modifier = Modifier.height(20.dp))
                     }
                 }
 
@@ -147,10 +153,10 @@ fun MovieDetailScreen(
 
         }
 
-        if (state.error.isNotBlank()) {
+        if (state.error?.isNotBlank() == true) {
             Text(
                 text = state.error,
-                color = MaterialTheme.colorScheme.error,
+                color = Color(0xFFDBE8E1),
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
