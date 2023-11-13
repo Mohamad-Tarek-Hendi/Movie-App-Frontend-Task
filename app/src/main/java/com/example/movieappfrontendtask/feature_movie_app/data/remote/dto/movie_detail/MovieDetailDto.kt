@@ -1,6 +1,9 @@
-package com.example.movieapitask.feature_movie_app.data.remote.dto.movie_dto
+package com.example.movieappfrontendtask.feature_movie_app.data.remote.dto.movie_detail
 
-import com.example.movieappfrontendtask.feature_movie_app.data.remote.dto.movie_detail.BelongsToCollection
+import com.example.movieapitask.feature_movie_app.data.remote.dto.movie_dto.CategoryDto
+import com.example.movieapitask.feature_movie_app.data.remote.dto.movie_dto.ProductionCompany
+import com.example.movieapitask.feature_movie_app.data.remote.dto.movie_dto.ProductionCountry
+import com.example.movieapitask.feature_movie_app.data.remote.dto.movie_dto.SpokenLanguageDto
 import com.google.gson.annotations.SerializedName
 
 data class MovieDetailDto(
@@ -32,7 +35,8 @@ data class MovieDetailDto(
     @SerializedName("release_date")
     val releaseDate: String,
     val revenue: Int,
-    val runtime: Int,
+    @SerializedName("runtime")
+    val duration: Int,
     @SerializedName("spoken_languages")
     val spokenLanguages: List<SpokenLanguageDto>,
     val status: String,

@@ -1,9 +1,9 @@
 package com.example.movieappfrontendtask.feature_movie_app.data.mapper.movie_detail_mapping
 
 import com.example.movieapitask.feature_movie_app.data.remote.dto.movie_dto.CategoryDto
-import com.example.movieapitask.feature_movie_app.data.remote.dto.movie_dto.MovieDetailDto
 import com.example.movieapitask.feature_movie_app.data.remote.dto.movie_dto.SpokenLanguageDto
 import com.example.movieapitask.feature_movie_app.domain.model.movie.SpokenLanguage
+import com.example.movieappfrontendtask.feature_movie_app.data.remote.dto.movie_detail.MovieDetailDto
 import com.example.movieappfrontendtask.feature_movie_app.domain.model.movie_detail.Category
 import com.example.movieappfrontendtask.feature_movie_app.domain.model.movie_detail.MovieDetail
 
@@ -18,6 +18,7 @@ fun MovieDetailDto.toMovieDetail(): MovieDetail {
         overview = overview,
         posterPath = posterPath,
         releaseDate = releaseDate,
+        duration = duration,
         revenue = revenue,
         spokenLanguages = spokenLanguages.map {
             it.toSpokenLanguage()

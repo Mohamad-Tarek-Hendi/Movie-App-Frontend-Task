@@ -1,6 +1,6 @@
 package com.example.movieappfrontendtask.feature_movie_app.data.remote
 
-import com.example.movieapitask.feature_movie_app.data.remote.dto.movie_dto.MovieDetailDto
+import com.example.movieappfrontendtask.feature_movie_app.data.remote.dto.movie_detail.MovieDetailDto
 import com.example.movieappfrontendtask.feature_movie_app.data.remote.dto.movie_dto.MovieDto
 import com.example.movieappfrontendtask.feature_movie_app.data.remote.dto.similar_movie.SimilarMovieDto
 import retrofit2.http.GET
