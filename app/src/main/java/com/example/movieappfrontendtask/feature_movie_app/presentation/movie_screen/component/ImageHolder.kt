@@ -14,6 +14,7 @@ import coil.request.ImageRequest
 fun ImageHolder(
     isLoading: Boolean,
     imageUrl: String?,
+    contentScale: ContentScale,
     modifier: Modifier
 ) {
 
@@ -27,7 +28,7 @@ fun ImageHolder(
                     .crossfade(true)
                     .build(),
                 contentDescription = "Image",
-                contentScale = ContentScale.FillWidth,
+                contentScale = contentScale,
                 modifier = modifier,
             )
         },

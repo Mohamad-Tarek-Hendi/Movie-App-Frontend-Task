@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.movieappfrontendtask.feature_movie_app.domain.model.movie.MovieResult
@@ -46,6 +47,7 @@ fun MovieItem(
         Box(modifier = Modifier.height(200.dp)) {
 
             ImageHolder(
+                contentScale = ContentScale.FillWidth,
                 imageUrl = moviesResult.posterPath,
                 modifier = Modifier.fillMaxSize(),
                 isLoading = isLoading
