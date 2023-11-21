@@ -12,8 +12,7 @@ import androidx.compose.ui.text.style.TextAlign
 fun SubtitleSecondary(text: String, textAlign: TextAlign) {
     Text(
         text = text,
-        style = MaterialTheme.typography.titleMedium,
-        color = Color(0xFFDBE8E1),
+        style = MaterialTheme.typography.titleMedium.copy(color = Color(0xFFDBE8E1)),
         textAlign = textAlign,
         modifier = Modifier.fillMaxWidth()
     )

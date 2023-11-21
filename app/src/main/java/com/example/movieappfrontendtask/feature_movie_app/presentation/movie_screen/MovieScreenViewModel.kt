@@ -123,6 +123,7 @@ class MovieScreenViewModel @Inject constructor(
                         isLoadingShimmer = movieResults.isLoading
                     )
 
+                    else -> {}
                 }
             }
         }
@@ -161,6 +162,7 @@ class MovieScreenViewModel @Inject constructor(
                             isLoading = results.isLoading,
                         )
 
+                        else -> {}
                     }
                 }
         }
@@ -200,6 +202,7 @@ class MovieScreenViewModel @Inject constructor(
                         )
                     }
 
+                    else -> {}
                 }
             }
 

@@ -21,7 +21,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -66,9 +65,8 @@ fun BottomSheetContent(
                         )
                     }..."
                 } else movieResult.overview,
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.bodyMedium.copy(color = Color(0xFF034687)),
                 overflow = TextOverflow.Ellipsis,
-                color = Color(0xFF034687)
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -80,12 +78,10 @@ fun BottomSheetContent(
                 Text(
                     text = movieResult.voteCount.toString(),
                     style = MaterialTheme.typography.bodySmall,
-                    fontWeight = FontWeight.Bold
                 )
                 Text(
                     text = movieResult.releaseDate,
                     style = MaterialTheme.typography.bodySmall,
-                    fontWeight = FontWeight.Bold
                 )
             }
 
